@@ -6,8 +6,15 @@
   "permissions": [
     "activeTab"
   ],
+  "host_permissions" : [
+    "https://downloader.atlantishq.de/*",
+    "http://localhost:5000/*",
+    "http://localhost/*"
+  ],
   "background": {
-    "service_worker": "background.js"
+    "scripts": [
+        "background.js"
+    ]
   },
   "action": {
     "default_title": "Submit URL to atlantishq"

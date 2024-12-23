@@ -5,7 +5,10 @@ chrome.action.onClicked.addListener(async (tab) => {
         return;
     }
 
-    const targetUrl = `https://downloader.atlantishq.de?secret=token&url=${encodeURIComponent(tab.url)}`;
+    //const host = "https://downloader.atlantishq.de/submit-url"
+    const host = "http://localhost:5000/submit-url"
+    const token = "test"
+    const targetUrl = `${host}?secret=${token}&url=${encodeURIComponent(tab.url)}`;
   
     try {
         await fetch(targetUrl, { method: 'GET' });
