@@ -15,7 +15,7 @@ def get_video_list():
     '''Return a list of videos which should be downloaded'''
 
     secret = flask.request.args.get("secret")
-    if not secret or secret != app.config["SECRET"]:
+    if not secret or secret != app.config["APP_SECRET"]:
         return ("Invalid or missing secret", 401)
 
     # build response urls #
@@ -28,31 +28,36 @@ def get_video_list():
     return flask.jsonify(response)
 
 
-@app.route('/submit-url', methods=["POST"])
+@app.route('/submit-url', methods=["POST", "GET"])
 def submit_url():
 
     secret = flask.request.args.get("secret")
-    if not secret or secret != app.config["SECRET"]:
+    if not secret or secret != app.config["APP_SECRET"]:
         return ("Invalid or missing secret", 401)
 
     # save submited url if it is not already in the list #
-    url = flask.request.json.get("url")
+    if flask.request.method == "POST":
+        url = flask.request.json.get("url")
+    else:
+        url = flask.request.args.get("url")
+
     if not url:
         return ("Missing 'url' in json", 405)
     else:
         if url not in app.config["URLS"]:
             app.config["URLS"].update({ url : { "queried" : False } })
+            return ("", 204)
         else:
             return ("URL already in list", 409)
 
 
 @app.route('/submit-file', methods=["POST"])
-def submit_url():
+def submit_file():
 
     UPLOAD_DIR = "upload/"
 
     secret = flask.request.args.get("secret")
-    if not secret or secret != app.config["SECRET"]:
+    if not secret or secret != app.config["APP_SECRET"]:
         return ("Invalid or missing secret", 401)
 
     f = flask.request.files['file']
@@ -69,13 +74,13 @@ def submit_url():
 def settings():
 
     secret = flask.request.args.get("secret")
-    if not secret or secret != app.config["SECRET"]:
+    if not secret or secret != app.config["APP_SECRET"]:
         return ("Invalid or missing secret", 401)
 
 
 def create_app():
 
-    secret = os.environ.get("APP_SECRET"):
+    secret = os.environ.get("APP_SECRET")
     if not secret:
         print("Missing APP_SECRET in environment", file=sys.stderr)
         sys.exit(1)
