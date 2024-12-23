@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "Submit URL to Atlantis HQ",
+  "version": "1.0",
+  "description": "Submits a URL for download",
+  "permissions": [
+    "activeTab"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Submit URL to atlantishq"
+  }
+}
