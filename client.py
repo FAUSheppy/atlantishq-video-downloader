@@ -1,17 +1,19 @@
 import requests
+import os
 import subprocess
 import sys
 
 # Configuration
-REMOTE_URL = "https://downloader.atlantishq.com/get-list"  # Replace with your actual URL
-TOKEN = "secret"  # Replace with your actual token
+SECRET = os.environ.get("APP_SECRET") or "test"
+REMOTE_URL = "https://downloader.atlantishq.com/get-list?secret=" + SECRET
+REMOTE_URL = "http://localhost:5000/get-list?secret=" + SECRET
 
-def fetch_json(remote_url, token):
+def fetch_json(remote_url):
     """
     Fetch JSON data from the remote URL using the provided token.
     """
     try:
-        response = requests.get(remote_url, params={"token": token})
+        response = requests.get(remote_url, params={"secret": SECRET})
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
@@ -38,10 +40,10 @@ def execute_commands(urls):
 
 def main():
     # Fetch JSON data
-    json_data = fetch_json(REMOTE_URL, TOKEN)
+    json_data = fetch_json(REMOTE_URL)
 
     # Extract "urls" key
-    urls = json_data.get("urls", [])
+    urls = json_data
     if not isinstance(urls, list):
         print("Invalid JSON structure: 'urls' key is not a list.")
         sys.exit(1)
